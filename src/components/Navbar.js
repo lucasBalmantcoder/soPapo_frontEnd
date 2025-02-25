@@ -1,41 +1,38 @@
-import React from 'react';
-import { Navbar, Nav, Container, Button } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { loginUser } from '../services/api';
+import { useNavigate } from 'react-router-dom';  // Importa o hook useNavigate
 
-const NavigationBar = () => {
-  const navigate = useNavigate();
-  const token = localStorage.getItem('token'); // Verifica se há token
+const Login = () => {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const navigate = useNavigate();  // Usa o hook useNavigate
 
-  const handleLogout = () => {
-    localStorage.removeItem('token'); // Remove token do localStorage
-    navigate('/login'); // Redireciona para a página de login
-  };
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        try {
+            const data = await loginUser(username, password);
+            localStorage.setItem('accessToken', data.access);
+            console.log('Login bem-sucedido:', data);
 
-  return (
-    <Navbar bg="primary" variant="dark" expand="lg">
-      <Container>
-        <Navbar.Brand as={Link} to="/">SóPapo</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="ms-auto">
-            {token ? (
-              // Se o usuário estiver logado, mostra o botão de logout
-              <>
-                <Nav.Link as={Link} to="/profile">Perfil</Nav.Link>
-                <Button variant="outline-light" onClick={handleLogout}>Logout</Button>
-              </>
-            ) : (
-              // Se não estiver logado, mostra login e registro
-              <>
-                <Nav.Link as={Link} to="/login">Login</Nav.Link>
-                <Nav.Link as={Link} to="/register">Registro</Nav.Link>
-              </>
-            )}
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
-  );
+            // Após o login bem-sucedido, redireciona para a página Home (ou outra página)
+            navigate('/home');  // Substitua '/home' pelo caminho que você deseja
+        } catch (err) {
+            setError('Falha ao fazer login. Verifique suas credenciais.');
+        }
+    };
+
+    return (
+        <div>
+            <h2>Login</h2>
+            {error && <p>{error}</p>}
+            <form onSubmit={handleLogin}>
+                <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Usuário" />
+                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Senha" />
+                <button type="submit">Entrar</button>
+            </form>
+        </div>
+    );
 };
 
-export default NavigationBar;
+export default Login;

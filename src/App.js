@@ -1,26 +1,20 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import NavigationBar from './components/Navbar';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from './pages/Login';
-import Register from './pages/Register';
-import ProfilePage from './pages/ProfilePage'; 
-import Home from './pages/Home';
+import Home from './pages/Home'; 
+import Profile from './pages/ProfilePage';  // Página de perfil do usuário
 
 function App() {
-  return (
-    <Router>
-      <div>
-        <NavigationBar />
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path ="/register" element ={<Register />}/>
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/home" element={<Home />} />
-        </Routes>
-      </div>
-    </Router>
-  );
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<Login />} />  {/* Rota de login */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/profile" element={<Profile />} />  {/* Página de perfil */}
+            </Routes>
+        </Router>
+    );
 }
 
 export default App;
