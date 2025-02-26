@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+
+
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -11,6 +13,8 @@ const Chatroom = () => {
     const [error, setError] = useState(null);
     const [currentUser, setCurrentUser] = useState("");
     const [rooms, setRooms] = useState([]);
+    
+    const messageContainerRef = useRef(null); // Referência para o container das mensagens
 
     const API_URL = "http://127.0.0.1:5000/auth";
 
@@ -71,8 +75,6 @@ const Chatroom = () => {
             fetchMessages(roomId);
         }
     }, [roomId]);
-    
-    
 
     // Envia uma mensagem
     const sendMessage = async () => {
@@ -106,6 +108,18 @@ const Chatroom = () => {
             sendMessage();
         }
     };
+
+    // Função para rolar a página até a última mensagem
+    const scrollToBottom = () => {
+        if (messageContainerRef.current) {
+            messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+        }
+    };
+
+    // Chama a função de rolar até o final sempre que as mensagens são atualizadas
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
 
     // Renderiza uma mensagem
     const renderMessage = (msg, index) => {
@@ -176,7 +190,10 @@ const Chatroom = () => {
                 <h2 style={{ padding: "10px", borderBottom: "1px solid #ccc", margin: 0 }}>
                     Chat da Sala {roomId}
                 </h2>
-                <div style={{ flex: 1, padding: "10px", overflowY: "auto", boxSizing: "border-box", display: "flex", flexDirection: "column" }}>
+                <div 
+                    ref={messageContainerRef} 
+                    style={{ flex: 1, padding: "10px", overflowY: "auto", boxSizing: "border-box", display: "flex", flexDirection: "column" }}
+                >
                     {messages.length > 0 ? (
                         messages.map((msg, index) => renderMessage(msg, index))
                     ) : (
