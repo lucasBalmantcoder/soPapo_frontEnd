@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getUserRooms } from '../services/api';
+import { getUserRooms } from '../services/api'; // Ajuste se necessário
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
@@ -8,6 +8,7 @@ const Home = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate(); // Hook para redirecionar o usuário
 
+    // Função para buscar as salas do usuário
     const fetchUserRooms = async () => {
         setLoading(true);
         const token = localStorage.getItem('accessToken');
@@ -19,7 +20,7 @@ const Home = () => {
 
         try {
             const data = await getUserRooms(token);
-            setRooms(data.rooms);
+            setRooms(data.rooms); // Espera que o retorno tenha a chave rooms
             setLoading(false);
         } catch (err) {
             setError('Erro ao carregar salas.');
@@ -27,10 +28,12 @@ const Home = () => {
         }
     };
 
+    // Função para entrar em uma sala ao clicar
     const enterRoom = (roomId) => {
         navigate(`/room/${roomId}`);  // Redireciona para a sala específica
     };
 
+    // Função para redirecionar à página de criação de sala
     const handleCreateRoom = () => {
         navigate('/create-room');  // Redireciona para a página de criação de sala
     };

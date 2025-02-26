@@ -20,12 +20,11 @@ export const loginUser = async (username, password) => {
 };
 
 // Função para registrar um novo usuário
-export const registerUser = async (username, password) => {
+export const registerUser = async (userData) => {
     try {
-        const response = await axios.post(`${API_URL}/register`, { username, password });
+        const response = await axios.post('http://127.0.0.1:5000/auth/register', userData);
         return response.data;
     } catch (error) {
-        console.error('Erro ao registrar usuário:', error.response?.data || error.message);
         throw error;
     }
 };
@@ -48,7 +47,7 @@ export const getUserProfile = async () => {
         return response.data;
     } catch (error) {
         console.error('Erro ao obter o perfil do usuário:', error);
-        throw new Error('Erro ao buscar perfil do usuário');
+        throw error;
     }
 };
 
@@ -100,17 +99,81 @@ export const logoutUser = async () => {
 };
 
 export const createRoom = async (token, roomName, usernames) => {
-    const response = await axios.post(
-        '/api/create_room',  // URL da sua API
-        // const response = await axios.get(`${API_URL}/user/profile`
-        { name: roomName, usernames: usernames },
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        }
-    );
-    return response.data;
+    try {
+        const response = await axios.post(
+            `${API_URL}/create_room`,  // Corrigido a URL
+            { name: roomName, usernames: usernames },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao criar sala:', error.response?.data || error.message);
+        throw error;
+    }
 };
 
-// Não é mais necessário exportar no final
+
+
+// Função para deletar uma sala
+export const deleteRoom = async (roomId) => {
+    try {
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) {
+            throw new Error('Token de autenticação não encontrado');
+        }
+
+        const response = await axios.delete(`${API_URL}/rooms/${roomId}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao deletar a sala:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+// Função para enviar uma mensagem para uma sala
+export const sendMessage = async (token, roomId, message) => {
+    try {
+        const response = await axios.post(
+            'http://127.0.0.1:5000/auth/messages',
+            { room_id: roomId, message: message },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao enviar mensagem:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+// Função para buscar mensagens de uma sala
+export const getMessages = async (token, roomId) => {
+    try {
+        const response = await axios.get(
+            `http://127.0.0.1:5000/auth/messages/${roomId}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+        return response.data.messages; // Retorna a lista de mensagens
+    } catch (error) {
+        console.error('Erro ao obter mensagens:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
