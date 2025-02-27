@@ -8,7 +8,7 @@ SóPapo é uma plataforma de mensagens em tempo real desenvolvida com Flask no b
 Notas: os componentes do projeto sem comentário são o que não conseguir implementar.
 E as os componentes (desabilitado) sãos pages que retirei do projeto, por acabar implementado de outra forma.
 
-
+```
 src --------------------------------------raiz do projeto
 ├── App.js--------------------------------rotas da aplicação
 ├── App.test.js
@@ -35,7 +35,7 @@ src --------------------------------------raiz do projeto
 ├── services
 │   └── api.js
 └── setupTests.js
-
+```
 ## 📦 Pré-requisitos
 Antes de começar, você precisará ter instalado:
 - [Node.js](https://nodejs.org/) (versão recomendada: 18+)
