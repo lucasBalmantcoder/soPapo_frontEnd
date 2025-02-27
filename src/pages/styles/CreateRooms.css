@@ -1,0 +1,45 @@
+/* CreateRoom.css */
+.buttons-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.create-room-button,
+.back-to-chat-button {
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.create-room-button {
+    background-color: #62BECAFF;
+    color: white;
+}
+
+.create-room-button:hover {
+    background-color: #4c9cb2;
+}
+
+.create-room-button:disabled {
+    background-color: #d6e4e5;
+    cursor: not-allowed;
+}
+
+.back-to-chat-button {
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.back-to-chat-button:hover {
+    background-color: #ddd;
+}
+
+.back-to-chat-button:disabled {
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+}

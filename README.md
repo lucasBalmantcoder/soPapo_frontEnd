@@ -1,70 +1,62 @@
-# Getting Started with Create React App
+# SóPapo – Aplicação de chat de conversas baseado no whatsApp
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Descrição:
 
-## Available Scripts
+SóPapo é uma plataforma de mensagens em tempo real desenvolvida com Flask no backend e React.js no frontend. O sistema permite comunicação em grupos de estudo, trabalho ou lazer, com recursos como criação de salas, troca de mensagens, compartilhamento de arquivos e mais.
 
-In the project directory, you can run:
+# Estrutura do projeto:
+Notas: os componentes do projeto sem comentário são o que não conseguir implementar.
+E as os componentes (desabilitado) sãos pages que retirei do projeto, por acabar implementado de outra forma.
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+src --------------------------------------raiz do projeto
+├── App.js--------------------------------rotas da aplicação
+├── App.test.js
+├── components
+│   ├── ChatRoom.js
+│   ├── MessageInput.js
+│   └── Navbar.js-------------------------adiciona opções como logout do projeto
+├── index.css
+├── index.js
+├── logo.svg
+├── pages
+│   ├── AddUserToRoom.js------------------adiciona user na room
+│   ├  ── Chatroom.js----------------------principal rota do front, nele aparece a tela de chat e room
+│   ├── CreateRooms.js---------------------crias as rooms no front
+│   ├── DeleteUsersPage.js
+│   ├── Home.js---------------------------- desabilitado
+│   ├── Login.js---------------------------entra no sistema com nome e senha
+│   ├── ProfilePage.js--------------------- desabilitado
+│   ├── Register.js------------------------faz o register no sistema
+│   ├── RemoverUserRoom.js------------------desabilitado 
+│   └── styles
+│       └── CreateRooms.css
+├── reportWebVitals.js
+├── services
+│   └── api.js
+└── setupTests.js
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 📦 Pré-requisitos
+Antes de começar, você precisará ter instalado:
+- [Node.js](https://nodejs.org/) (versão recomendada: 18+)
+- [npm](https://www.npmjs.com/) ou [Yarn](https://yarnpkg.com/)
 
-### `npm test`
+## 📥 Instalação
+1. Clone o repositório:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+# Como rodar o projeto de frontend;
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Execute a api, usando o comand flask run.
+2. Execute o frontend, usando o comando npm start.
+3. irá abri no navegador.
+4. faça o register de user, com as seguintes informações.
+    └── Nome :de user
+    └── Email: no seguinte formato: ex: example@email.com
+    └── Senha: qualquer password numeral ou string: ex: 123 ou abc
+    └── Repita a senha: o mesmo password.
+    └── Clique em criar conta.
+5. após o login, a aba de chat abrira, escolha uma sala, e mande msg.
+6. para fazer teste é legal, abrir outro navegador para mandar msg de um navegador para outro.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

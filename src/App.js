@@ -7,7 +7,8 @@ import CreateRoom from "./pages/CreateRooms";
 import Register from "./pages/Register";
 import Chatroom from "./pages/Chatroom";
 import AddUserToRoom from "./pages/AddUserToRoom";
-import RemoverUserRoom from "./pages/RemoverUserRoom";
+import DeleteUsersPage from "./pages/DeleteUsersPage";
+import DeleteRooms from "./pages/DeleteRooms";  // Importando a página de deletar salas
 
 function App() {
     return (
@@ -24,7 +25,8 @@ function App() {
                 <Route path="/chat" element={<Chatroom />} /> {/* Rota sem roomId */}
                 <Route path="/chat/:roomId" element={<Chatroom />} /> {/* Rota com roomId */}
                 <Route path="/add-user/:roomId" element={<AddUserToRoom />} />
-                <Route path="/remove-user/:roomId" element={<RemoverUserRoom />} />
+                <Route path="/remove-user/:roomId" element={<DeleteUsersPage />} />
+                <Route path="/deleterooms" element={<DeleteRooms />} /> {/* Nova rota para apagar salas */}
             </Routes>
         </Router>
     );

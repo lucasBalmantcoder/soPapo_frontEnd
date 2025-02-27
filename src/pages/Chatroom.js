@@ -1,9 +1,6 @@
-
-
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-
 
 const Chatroom = () => {
     const { roomId } = useParams();
@@ -14,10 +11,22 @@ const Chatroom = () => {
     const [error, setError] = useState(null);
     const [currentUser, setCurrentUser] = useState("");
     const [rooms, setRooms] = useState([]);
-    
+
     const messageContainerRef = useRef(null); // Referência para o container das mensagens
+    const inputRef = useRef(null); // Referência para o campo de entrada
 
     const API_URL = "http://127.0.0.1:5000/auth";
+
+    // Função para rolar a página até a última mensagem
+    const scrollToBottom = () => {
+        if (messageContainerRef.current) {
+            // Usa `scrollTo` para garantir que a rolagem seja suave e precisa
+            messageContainerRef.current.scrollTo({
+                top: messageContainerRef.current.scrollHeight,
+                behavior: "smooth",
+            });
+        }
+    };
 
     // Carrega as salas e mensagens
     useEffect(() => {
@@ -25,52 +34,54 @@ const Chatroom = () => {
         if (storedUser) {
             setCurrentUser(storedUser);
         }
-    
+
         const fetchRooms = async () => {
             try {
-                setLoading(true); // Define loading como true antes de buscar os dados
+                setLoading(true);
                 const token = localStorage.getItem("accessToken");
                 const response = await axios.get(`${API_URL}/user/rooms`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setRooms(response.data.rooms);
-                setLoading(false); // Define loading como false após os dados serem carregados
+                setLoading(false);
             } catch (err) {
                 setError("Erro ao carregar salas.");
-                setLoading(false); // Define loading como false em caso de erro
+                setLoading(false);
             }
         };
-    
+
         const fetchMessages = async (roomId) => {
             if (!roomId || roomId === "undefined") {
                 console.error("Erro: roomId inválido", roomId);
                 return;
             }
-        
+
             try {
-                setLoading(true); // Define loading como true antes de buscar as mensagens
+                setLoading(true);
                 const response = await fetch(`http://127.0.0.1:5000/auth/messages/${roomId}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": `Bearer ${localStorage.getItem("accessToken")}` // Corrigido o nome do token
-                    }
+                        "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
+                    },
                 });
-        
+
                 if (!response.ok) {
                     throw new Error(`Erro ao buscar mensagens: ${response.statusText}`);
                 }
-        
+
                 const data = await response.json();
-                console.log("Mensagens carregadas:", data); // Verifique se as mensagens estão sendo carregadas corretamente
-                setMessages(data.messages); // Atualize o estado de mensagens
-                setLoading(false); // Define loading como false após as mensagens serem carregadas
+                setMessages(data.messages);
+                setLoading(false);
+
+                // Rola para a última mensagem após carregar as mensagens
+                setTimeout(scrollToBottom, 100); // Aguarda 100ms para garantir que o DOM seja renderizado
             } catch (error) {
-                console.error("Erro ao buscar mensagens:", error);
-                setLoading(false); // Define loading como false em caso de erro
+                setError("Erro ao buscar mensagens.");
+                setLoading(false);
             }
         };
-    
+
         fetchRooms();
         if (roomId) {
             fetchMessages(roomId);
@@ -89,7 +100,7 @@ const Chatroom = () => {
                 { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
             );
 
-            setNewMessage("");
+            // Atualiza o estado das mensagens
             setMessages((prevMessages) => [
                 ...prevMessages,
                 {
@@ -98,31 +109,39 @@ const Chatroom = () => {
                     timestamp: new Date().toISOString(),
                 },
             ]);
+
+            // Limpa o campo de entrada
+            setNewMessage("");
+
+            // Foca no campo de entrada após o envio da mensagem
+            if (inputRef.current) {
+                inputRef.current.focus();
+            }
+
+            // Rola para a última mensagem após o estado ser atualizado
+            setTimeout(scrollToBottom, 100); // Aguarda 100ms para garantir que o DOM seja renderizado
         } catch (error) {
             setError("Erro ao enviar mensagem.");
         }
     };
 
-    // Envia mensagem ao pressionar Enter
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter") {
-            sendMessage();
-        }
+    const handleRoomSelect = (roomId) => {
+        navigate(`/chat/${roomId}`);
+        setTimeout(() => {
+            if (inputRef.current) {
+                inputRef.current.focus();
+            }
+        }, 100);
     };
 
-    // Função para rolar a página até a última mensagem
-    const scrollToBottom = () => {
-        if (messageContainerRef.current) {
-            messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
-        }
+    const handleCreateRoom = () => {
+        navigate("/create-room"); // Roteamento para a página de criação de salas
     };
 
-    // Chama a função de rolar até o final sempre que as mensagens são atualizadas
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
+    const handleDeleteRoom = () => {
+        navigate("/deleterooms"); // Roteamento para a página de exclusão de salas
+    };
 
-    // Renderiza uma mensagem
     const renderMessage = (msg, index) => {
         const isCurrentUser = msg.username.trim().toLowerCase() === currentUser.trim().toLowerCase();
         return (
@@ -154,7 +173,6 @@ const Chatroom = () => {
         );
     };
 
-    // Renderiza a lista de salas
     const renderRooms = () => (
         <ul style={{ listStyle: "none", padding: 0, margin: 0, height: "calc(100vh - 20px)", overflowY: "auto" }}>
             {rooms.map((room) => (
@@ -167,7 +185,7 @@ const Chatroom = () => {
                         borderRadius: "5px",
                         cursor: "pointer",
                     }}
-                    onClick={() => navigate(`/chat/${room.room_id}`)}
+                    onClick={() => handleRoomSelect(room.room_id)}
                 >
                     {room.room_name} (Criado por: {room.creator})
                 </li>
@@ -180,21 +198,16 @@ const Chatroom = () => {
 
     return (
         <div style={{ display: "flex", height: "98vh", margin: 0, padding: 0, overflow: "hidden", boxSizing: "border-box" }}>
-            {/* Coluna das Salas (20% da tela) */}
             <div style={{ flex: "0 0 20%", borderRight: "1px solid #ccc", padding: "10px", overflowY: "hidden", boxSizing: "border-box" }}>
                 <h3 style={{ margin: 0 }}>Salas de Conversa</h3>
                 {renderRooms()}
             </div>
 
-            {/* Coluna do Chat (80% da tela) */}
             <div style={{ flex: "0 0 80%", display: "flex", flexDirection: "column", height: "100vh", boxSizing: "border-box" }}>
                 <h2 style={{ padding: "10px", borderBottom: "1px solid #ccc", margin: 0 }}>
-                    Chat da Sala {roomId}
+                    Chat da Sala {roomId || "Nenhuma sala selecionada"}
                 </h2>
-                <div 
-                    ref={messageContainerRef} 
-                    style={{ flex: 1, padding: "10px", overflowY: "auto", boxSizing: "border-box", display: "flex", flexDirection: "column" }}
-                >
+                <div ref={messageContainerRef} style={{ flex: 1, padding: "10px", overflowY: "auto", boxSizing: "border-box", display: "flex", flexDirection: "column" }}>
                     {messages.length > 0 ? (
                         messages.map((msg, index) => renderMessage(msg, index))
                     ) : (
@@ -206,15 +219,56 @@ const Chatroom = () => {
                         type="text"
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        placeholder="Digite sua mensagem..."
+                        onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                        placeholder={roomId ? "Digite sua mensagem..." : "Selecione uma sala para enviar mensagens"}
                         style={{ width: "80%", padding: "5px", boxSizing: "border-box" }}
-                        autoFocus
+                        disabled={!roomId}
+                        ref={inputRef}
                     />
-                    <button onClick={sendMessage} style={{ marginLeft: "10px", padding: "5px" }}>
+                    <button onClick={sendMessage} style={{ marginLeft: "10px", padding: "5px" }} disabled={!roomId}>
                         Enviar
                     </button>
                 </div>
+
+                {/* Ícone flutuante para criar uma nova sala */}
+                <div
+                    onClick={handleCreateRoom}
+                    style={{
+                        position: "fixed",
+                        bottom: "30px",
+                        left: "70px",
+                        backgroundColor: "#62BECAFF",
+                        color: "white",
+                        borderRadius: "0%",
+                        padding: "15px",
+                        cursor: "pointer",
+                        fontSize: "24px"
+                    }}
+                >
+                    criar nova sala
+                </div>
+                    {/* Ícone flutuante para criar uma nova sala */}
+                    <div
+                    onClick={handleDeleteRoom}
+                    style={{
+                        position: "fixed",
+                        top: "50%",  // Centraliza verticalmente
+                        left: "70px",
+                        backgroundColor: "#62BECAFF",
+                        color: "white",
+                        borderRadius: "0%",  // Deixe o border-radius maior para um formato redondo
+                        padding: "15px",
+                        cursor: "pointer",
+                        fontSize: "24px",
+                        transform: "translateY(500%)",  // Ajuste para corrigir o alinhamento
+                    }}
+                    >
+                        Deletar Sala
+                    </div>
+
+
+               
+
             </div>
         </div>
     );
