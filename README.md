@@ -44,9 +44,37 @@ Antes de começar, você precisará ter instalado:
 ## 📥 Instalação
 1. Clone o repositório:
 
+Clone o projeto:  
 
+```
+git@github.com:lucasBalmantcoder/soPapo_frontEnd.git
+
+git clone https://github.com/lucasBalmantcoder/soPapo_frontEnd.git
+cd sopapo-frontend
+
+
+2. Instale as dependências:
+
+npm install
+
+ou, se estiver usando Yarn:
+
+yarn install
+
+▶️ Rodando a Aplicação
+Após instalar as dependências, execute o seguinte comando para iniciar o projeto em modo de desenvolvimento:
+
+npm start
+ou
+
+
+yarn start
+O frontend estará disponível em:
+📍 http://localhost:3000/
+
+```
 # Como rodar o projeto de frontend;
-
+```
 1. Execute a api, usando o comand flask run.
 2. Execute o frontend, usando o comando npm start.
 3. irá abri no navegador.
@@ -59,4 +87,8 @@ Antes de começar, você precisará ter instalado:
 5. após o login, a aba de chat abrira, escolha uma sala, e mande msg.
 6. para fazer teste é legal, abrir outro navegador para mandar msg de um navegador para outro.
 
+
+
+
+```
 
